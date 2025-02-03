@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,16 +6,17 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-} from "react-native";
-import { useRouter } from "expo-router";
+} from 'react-native';
+import { useRouter } from 'expo-router';
 
-import styles from "./welcome.style";
-import { icons } from "../../../constants";
+import styles from './welcome.style';
+import { icons, SIZES } from '../../../constants';
 
-const jobTypes = ["full-time", "part-time", "freelance"];
+const jobTypes = ['full-time', 'part-time', 'freelance'];
 
 const Welcome = () => {
   const router = useRouter();
+  const [activeJobType, setActiveJobType] = useState('full-time');
   return (
     <View>
       <View style={styles.container}>
@@ -27,27 +28,37 @@ const Welcome = () => {
         <View style={styles.searchWrapper}>
           <TextInput
             style={styles.searchInput}
-            value=""
+            value=''
             onChange={() => {}}
-            placeholder="What are you looking for?"
+            placeholder='What are you looking for?'
           />
         </View>
         <TouchableOpacity style={styles.searchBtn} onPress={() => {}}>
           <Image
             source={icons.search}
-            resizeMode="contain"
+            resizeMode='contain'
             style={styles.searchBtnImage}
           />
         </TouchableOpacity>
       </View>
+
       <View style={styles.tabsContainer}>
         <FlatList
           data={jobTypes}
           renderItem={({ item }) => (
-            <TouchableOpacity>
-              <Text>{item}</Text>
+            <TouchableOpacity
+              style={styles.tab(activeJobType, item)}
+              onPress={() => {
+                setActiveJobType(item);
+                router.push(`/search/${item}`);
+              }}
+            >
+              <Text style={styles.tabText(activeJobType, item)}>{item}</Text>
             </TouchableOpacity>
           )}
+          keyExtractor={(item) => item}
+          contentContainerStyle={{ columnGap: SIZES.small }}
+          horizontal
         />
       </View>
     </View>
